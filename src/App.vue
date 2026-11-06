@@ -213,11 +213,15 @@ async function submitContact() {
       <section v-else-if="page === 'contact'" class="section page-section narrow">
         <h1>{{ t('contact.title') }}</h1><p>{{ t('contact.description') }}</p>
         <div class="contact-card"><h2>{{ t('contact.sendMessage') }}</h2>
-          <form class="checkout-form" @submit.prevent="submitContact">
-            <label>{{ t('contact.name') }}<input v-model="contact.name" required></label>
-            <label>{{ t('contact.email') }}<input v-model="contact.email" type="email" required></label>
-            <label>{{ t('contact.subject') }}<select v-model="contact.subject"><option value="productInquiry">{{ t('contact.productInquiry') }}</option><option value="wholesaleOrder">{{ t('contact.wholesaleOrder') }}</option><option value="shipping">{{ t('contact.shipping') }}</option><option value="partnership">{{ t('contact.partnership') }}</option><option value="other">{{ t('contact.other') }}</option></select></label>
-            <label>{{ t('contact.message') }}<textarea v-model="contact.message" rows="5" required></textarea></label>
+          <form class="checkout-form"
+  action="https://api.web3forms.com/submit"
+  method="POST">
+  <input type="hidden" name="access_key" value="564c7da8-47f9-4571-afaa-f5eb26f4a108">
+  <input type="hidden" name="subject" value="Honey Website Contact Message">
+            <label>{{ t('contact.name') }}<input v-model="contact.name" name="name" required></label>
+            <label>{{ t('contact.email') }}<input v-model="contact.email" name="email" type="email" required></label>
+            <label>{{ t('contact.subject') }}<select v-model="contact.subject" name="inquiry_type"><option value="productInquiry">{{ t('contact.productInquiry') }}</option><option value="wholesaleOrder">{{ t('contact.wholesaleOrder') }}</option><option value="shipping">{{ t('contact.shipping') }}</option><option value="partnership">{{ t('contact.partnership') }}</option><option value="other">{{ t('contact.other') }}</option></select></label>
+            <label>{{ t('contact.message') }}<textarea v-model="contact.message" name="message" rows="5" required></textarea></label>
             <button class="primary" type="submit" :disabled="contactSending">
               {{ contactSending
                 ? (locale === 'ar' ? 'جارٍ الإرسال...' : 'Sending...')
