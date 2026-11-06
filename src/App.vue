@@ -41,7 +41,53 @@ function proceedToPayment() {
   if (Object.values(customer.value).some(value => !value.trim())) return alert(t('checkout.required'))
   navigate('payment')
 }
-function submitContact() { contactNotice.value = true }
+const contactSending = ref(false)
+const contactError = ref(false)
+
+async function submitContact() {
+  if (contactSending.value) return
+  contactSending.value = true
+  contactError.value = false
+  contactNotice.value = false
+
+  const formData = new FormData()
+  formData.append('name', contact.value.name)
+  formData.append('email', contact.value.email)
+  formData.append('subject', t('contact.' + contact.value.subject))
+  formData.append('message', contact.value.message)
+  formData.append('_subject', 'New Honey Website Contact Message')
+  formData.append('_captcha', 'true')
+
+  try {
+    const response = await fetch(
+      'https://formsubmit.co/ajax/omer.ibisolar@gmail.com',
+      {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' }
+      }
+    )
+
+    const result = await response.json()
+
+    if (!response.ok || result.success === false || result.success === 'false') {
+      throw new Error('Message not accepted')
+    }
+
+    contactNotice.value = true
+    contact.value = {
+      name: '',
+      email: '',
+      subject: 'productInquiry',
+      message: ''
+    }
+  } catch (error) {
+    console.error('Contact submission failed:', error)
+    contactError.value = true
+  } finally {
+    contactSending.value = false
+  }
+}
 </script>
 
 <template>
@@ -172,9 +218,18 @@ function submitContact() { contactNotice.value = true }
             <label>{{ t('contact.email') }}<input v-model="contact.email" type="email" required></label>
             <label>{{ t('contact.subject') }}<select v-model="contact.subject"><option value="productInquiry">{{ t('contact.productInquiry') }}</option><option value="wholesaleOrder">{{ t('contact.wholesaleOrder') }}</option><option value="shipping">{{ t('contact.shipping') }}</option><option value="partnership">{{ t('contact.partnership') }}</option><option value="other">{{ t('contact.other') }}</option></select></label>
             <label>{{ t('contact.message') }}<textarea v-model="contact.message" rows="5" required></textarea></label>
-            <button class="primary" type="submit">{{ t('contact.send') }}</button>
-            <p v-if="contactNotice" class="notice" role="status">{{ t('contact.preview') }}</p>
-          </form><p class="note">{{ t('contact.preview') }}</p>
+            <button class="primary" type="submit" :disabled="contactSending">
+              {{ contactSending
+                ? (locale === 'ar' ? 'جارٍ الإرسال...' : 'Sending...')
+                : t('contact.send') }}
+            </button>
+            <p v-if="contactError" class="notice" role="alert">
+              {{ locale === 'ar'
+                ? 'تعذر إرسال الرسالة. يرجى المحاولة مرة أخرى.'
+                : 'Message could not be sent. Please try again.' }}
+            </p>
+            <p v-if="contactNotice" class="notice" role="status">{{ locale === 'ar' ? 'تم قبول رسالتك للإرسال. شكراً لتواصلك معنا.' : 'Your message was accepted for delivery. Thank you for contacting us!' }}</p>
+          </form>
         </div>
         <div class="contact-card"><a class="whatsapp-button" :href="whatsappLink" target="_blank" rel="noopener noreferrer">{{ t('whatsapp.join') }}</a></div>
       </section>
