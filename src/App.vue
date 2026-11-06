@@ -82,6 +82,10 @@ function submitContact() { contactNotice.value = true }
 
     <main>
       <template v-if="page === 'home'">
+        <div class="launch-announcement" role="status">
+          <span aria-hidden="true">🍯</span>
+          <strong>{{ locale === 'ar' ? 'المتجر الإلكتروني قريباً إن شاء الله!' : "Online Store Coming Soon, Insha'Allah!" }}</strong>
+        </div>
         <section class="hero">
           <div class="hero-content">
             <span class="eyebrow">{{ t('home.eyebrow') }}</span>
@@ -105,7 +109,7 @@ function submitContact() { contactNotice.value = true }
           <div class="product-grid">
             <article v-for="product in products" :key="product.id" class="product-card">
               <div class="product-image"><img :src="product.image" :alt="t(product.nameKey)" loading="lazy"></div>
-              <div class="product-info"><span class="category">{{ t(product.categoryKey) }}</span><h3>{{ t(product.nameKey) }}</h3><p>{{ product.size }}</p><div class="product-bottom"><strong>{{ money(product.price) }}</strong><button @click="addToCart(product)">{{ t('shop.add') }} +</button></div></div>
+              <div class="product-info"><span class="category">{{ t(product.categoryKey) }}</span><h3>{{ t(product.nameKey) }}</h3><p>{{ product.size }}</p><div class="product-bottom"><strong>{{ money(product.price) }}</strong><button disabled title="Online ordering coming soon">{{ locale === 'ar' ? 'قريباً إن شاء الله' : 'Coming Soon, Insha’Allah' }}</button></div></div>
             </article>
           </div>
         </section>
@@ -118,7 +122,7 @@ function submitContact() { contactNotice.value = true }
         <div class="product-grid">
           <article v-for="product in products" :key="product.id" class="product-card">
             <div class="product-image"><img :src="product.image" :alt="t(product.nameKey)" loading="lazy"></div>
-            <div class="product-info"><span class="category">{{ t(product.categoryKey) }}</span><h3>{{ t(product.nameKey) }}</h3><p>{{ product.size }}</p><div class="product-bottom"><strong>{{ money(product.price) }}</strong><button @click="addToCart(product)">{{ t('shop.add') }} +</button></div></div>
+            <div class="product-info"><span class="category">{{ t(product.categoryKey) }}</span><h3>{{ t(product.nameKey) }}</h3><p>{{ product.size }}</p><div class="product-bottom"><strong>{{ money(product.price) }}</strong><button disabled title="Online ordering coming soon">{{ locale === 'ar' ? 'قريباً إن شاء الله' : 'Coming Soon, Insha’Allah' }}</button></div></div>
           </article>
         </div>
       </section>
@@ -133,7 +137,7 @@ function submitContact() { contactNotice.value = true }
             <button class="remove" @click="removeFromCart(item.id)">{{ t('cart.remove') }}</button>
           </div>
           <div class="total"><strong>{{ t('cart.subtotal') }}</strong><strong>{{ money(subtotal) }}</strong></div>
-          <p class="note">{{ t('cart.note') }}</p><button class="primary" @click="navigate('checkout')">{{ t('cart.checkout') }}</button>
+          <p class="note">{{ t('cart.note') }}</p><button class="primary" disabled title="Checkout coming soon">{{ locale === 'ar' ? 'الطلب قريباً إن شاء الله' : 'Ordering Coming Soon, Insha’Allah' }}</button>
         </template>
       </section>
 
@@ -279,4 +283,23 @@ button { cursor: pointer; }
 @media (max-width: 1100px) { .header { justify-content: center; } .navigation { justify-content: center; } }
 @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .product-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 550px) { .header { align-items: flex-start; } .logo-icon { font-size: 38px; } .brand-top { font-size: 12px; } .brand-main { font-size: 20px; } .hero { padding: 50px 6%; } .hero-visual { min-height: 250px; } .hero-visual > span { font-size: 110px; } .features { grid-template-columns: 1fr; } .product-grid { grid-template-columns: 1fr; } .section-heading { flex-direction: column; align-items: flex-start; } .footer { flex-direction: column; } .cart-item { flex-wrap: wrap; } }
+
+/* Homepage launch announcement */
+.launch-announcement {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 24px;
+  background: linear-gradient(90deg, #f8df9c, #fff2c9);
+  color: #67400d;
+  text-align: center;
+  font-size: clamp(16px, 2vw, 23px);
+  font-weight: 800;
+  border-bottom: 1px solid #d9b86a;
+}
+.launch-announcement span {
+  font-size: 28px;
+}
+
 </style>
